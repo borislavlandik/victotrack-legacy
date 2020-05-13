@@ -1,0 +1,22 @@
+.input-text {
+    padding: 12px 20px;
+    
+    outline: none;
+    border: 2px solid $text-color;
+    border-radius: 50px;
+    background: none;
+
+    font-family: $font-family;
+    font-size: $font-size-p;
+    color: $text-color;
+
+    transition: border .2s ease-in-out;
+
+    &:focus {
+        border: 2px solid $accent-color;
+    }
+
+    &.centered {
+        text-align: center;
+    }
+}

@@ -1,0 +1,15 @@
+.content-home {
+
+    .modes {
+        margin-bottom: 80px;
+        display: flex;
+        justify-content: space-around;
+
+        .mode__title {
+            margin-bottom: 30px;
+
+            font-size: $font-size-h3;
+            text-align: center;
+        }
+    }
+}
