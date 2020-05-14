@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap');
 
 @import "vars";
+@import "mixins";
 @import "header";
 @import "content";
 @import "buttons";
@@ -19,5 +20,6 @@ h1, h2, h3, h4, h5, h6, p {
 
 .container {
     margin: 0 auto;
+    padding: 0 20px;
     max-width: $container-size;
 }
