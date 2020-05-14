@@ -13,13 +13,14 @@ button {
     text-decoration: none;
     font-family: $font-family;
     font-size: $font-size-p;
+    text-align: center;
     color: $text-color;
 
     transition: box-shadow .2s ease-in-out,
                 background-color .1s ease-in-out;
 
     &:hover {
-        box-shadow: 0px 4px 50px #1DB954;
+        box-shadow: 0px 4px 50px $accent-color;
     }
 
     &:active {
