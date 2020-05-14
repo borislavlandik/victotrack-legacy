@@ -8,7 +8,7 @@
         <div class="modes">
             <div class="mode">
                 <h3 class="mode__title">Создать комнату</h3>
-                <button @click="say('Spotify')" class="button">Продолжить со Spotify</button>
+                <a :href="serverUrl + '/login'" class="button">Продолжить со Spotify</a>
             </div>
             <div class="mode">
                 <h3 class="mode__title">Войти в комнату</h3>
@@ -21,7 +21,10 @@
 </template>
 
 <script>
+import Mixin from '@/mixin'
+
 export default {
+    mixins: [Mixin],
     methods: {
         say (message) {
             console.log(message)
