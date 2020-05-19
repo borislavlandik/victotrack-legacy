@@ -1,9 +1,9 @@
 <template>
     <div class="playlist">
         <swiper class="playlist__slider" :options="swiperOptions" @click-slide="changePlaylist">
-            <swiper-slide v-for="(item, index) in 10" :key="index">
+            <swiper-slide v-for="(playlist, index) in playlists" :key="playlist.id">
                 <playlist-item :class="{ 'active': activeIndex === index }"
-                    :name="index" :img="'https://source.unsplash.com/random/250x250?sig=' + index">
+                    :name="playlist.name" :img="playlist.image">
                 </playlist-item>
             </swiper-slide>
             <div class="playlist__pagination" slot="pagination"></div>
@@ -23,6 +23,9 @@ import PlaylistItem from '@/components/PlaylistItem'
 import 'swiper/css/swiper.css'
 
 export default {
+    props: {
+        playlists: Array
+    },
     data () {
         return {
             swiperOptions: {
