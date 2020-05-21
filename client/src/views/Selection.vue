@@ -2,7 +2,7 @@
     <div class="container">
         <div class="content-selection">
             <div class="selection-text">
-                <h2 class="selection__header">Комната: 293415</h2>
+                <h2 class="selection__header">Комната: {{room}}</h2>
                 <p>Выберите плейлист для игры</p>
             </div>
             <playlist-slider :playlists="playlists"></playlist-slider>
@@ -26,17 +26,29 @@ export default {
     },
     data () {
         return {
-            playlists: [],
-            players: []
+            roomId: null,
+            playlists: []
         }
+    },
+    computed: {
+        players () {
+            return this.$store.state.players
+        },
+        room () {
+            return this.$store.state.room
+        }
+    },
+    created () {
+        this.$socket.emit('createRoom', 'Leader Name')
     },
     async mounted () {
         this.playlists = await Spotify.getPlaylists()
-        this.$refs.audioPlayer.volume = 0.4
     },
     methods: {
         startGame () {
-            console.log('Send "start" to server')
+            if (this.$store.state.selectedPlaylistIndex !== null) {
+                this.$router.push('game')
+            }
         }
     }
 }

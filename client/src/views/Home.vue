@@ -12,10 +12,10 @@
             </div>
             <div class="mode">
                 <h3 class="mode__title">Войти в комнату</h3>
-                <input class="input-text centered" type="text" placeholder="Введите код">
+                <input class="input-text centered" type="text" placeholder="Введите код" v-model="roomId">
             </div>
         </div>
-        <button @click="say('Start')" class="button centered">Начать игру</button>
+        <button @click="startGame" class="button centered">Начать игру</button>
     </div>
 </div>
 </template>
@@ -25,9 +25,16 @@ import Mixin from '@/mixin'
 
 export default {
     mixins: [Mixin],
+    data () {
+        return {
+            roomId: null
+        }
+    },
     methods: {
-        say (message) {
-            console.log(message)
+        startGame () {
+            this.$socket.emit('addPlayer', this.roomId, 'Some Name', (data) => {
+                console.log(data)
+            })
         }
     }
 }
