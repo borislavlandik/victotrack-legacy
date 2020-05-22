@@ -49,19 +49,25 @@ module.exports = function (app) {
                 body: data
             }
 
-            const response = await fetch('https://accounts.spotify.com/api/token', options)
-            const json = await response.json()
+            const tokenResponse = await fetch('https://accounts.spotify.com/api/token', options)
+            const tokenJson = await tokenResponse.json()
 
-            const userId = generators.generateId('u')
-
-            users.push({
-                userId: userId,
-                accessToken: json.access_token,
-                refreshToken: json.refresh_token
+            const userResponse = await fetch('https://api.spotify.com/v1/me', {
+                headers: {
+                    Authorization: `Bearer ${tokenJson.access_token}`
+                }
             })
 
-            console.log('USERS:')
-            users.forEach(user => console.log(user))
+            const userJson = await userResponse.json()
+            const userId = userJson.id
+
+            if (users.find(user => user.id === userId) === undefined) {
+                users.push({
+                    id: userId,
+                    accessToken: tokenJson.access_token,
+                    refreshToken: tokenJson.refresh_token
+                })
+            }
 
             res.cookie('user_id', userId)
             res.redirect(`${clientUrl}/selection`)
