@@ -1,18 +1,19 @@
 import Cookies from 'js-cookie'
 
+const apiUrl = 'http://localhost:3000'
+
 export default {
     async getPlaylists (minTracks = 15) {
-        const token = Cookies.get('user_token')
+        const response = await fetch(`${apiUrl}/playlists`, { credentials: 'include' })
 
-        const response = await fetch('https://api.spotify.com/v1/me/playlists?limit=50', {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }).then(data => data.json())
+        if (response.status !== 200) {
+            return []
+        }
 
+        const playlistsJson = await response.json()
         const placeholder = 'http://placekitten.com/250/250'
 
-        return response.items
+        return playlistsJson.items
             .filter(item => item.tracks.total >= minTracks)
             .map(({ name, id, images }) => {
                 return {

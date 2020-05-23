@@ -69,8 +69,55 @@ module.exports = function (app) {
                 })
             }
 
+            console.log({
+                id: userId,
+                accessToken: tokenJson.access_token,
+                refreshToken: tokenJson.refresh_token
+            })
+
             res.cookie('user_id', userId)
             res.redirect(`${clientUrl}/selection`)
         }
+    })
+
+    async function refreshToken (user) {
+        const data = `grant_type=refresh_token&refresh_token=${user.refreshToken}`
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                Authorization: `Basic ${Buffer.from(`${clientId}:${secretId}`).toString('base64')}`
+            },
+            body: data
+        }
+
+        const tokenResponse = await fetch('https://accounts.spotify.com/api/token', options)
+        const tokenJson = await tokenResponse.json()
+
+        user.accessToken = tokenJson.access_token
+        user.refreshToken = tokenJson.refresh_token
+    }
+
+    app.get('/playlists', async (req, res) => {
+        if (req.cookies.user_id === undefined) {
+            return res.sendStatus(403)
+        }
+
+        const user = users.find(user => user.id === req.cookies.user_id)
+        const options = {
+            headers: {
+                Authorization: `Bearer ${user.accessToken}`
+            }
+        }
+
+        let playlistsResponse = await fetch('https://api.spotify.com/v1/me/playlists', options)
+
+        if (playlistsResponse.status === 401) {
+            await refreshToken(user)
+            playlistsResponse = await fetch('https://api.spotify.com/v1/me/playlists', options)
+        }
+
+        const playlistsJson = await playlistsResponse.json()
+        res.send(JSON.stringify(playlistsJson))
     })
 }
