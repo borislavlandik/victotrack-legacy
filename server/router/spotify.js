@@ -69,12 +69,6 @@ module.exports = function (app) {
                 })
             }
 
-            console.log({
-                id: userId,
-                accessToken: tokenJson.access_token,
-                refreshToken: tokenJson.refresh_token
-            })
-
             res.cookie('user_id', userId)
             res.redirect(`${clientUrl}/selection`)
         }
@@ -98,26 +92,48 @@ module.exports = function (app) {
         user.refreshToken = tokenJson.refresh_token
     }
 
-    app.get('/playlists', async (req, res) => {
-        if (req.cookies.user_id === undefined) {
-            return res.sendStatus(403)
-        }
-
-        const user = users.find(user => user.id === req.cookies.user_id)
+    async function spotifyRequest (endpoint, user) {
         const options = {
             headers: {
                 Authorization: `Bearer ${user.accessToken}`
             }
         }
 
-        let playlistsResponse = await fetch('https://api.spotify.com/v1/me/playlists', options)
+        let response = await fetch(endpoint, options)
 
-        if (playlistsResponse.status === 401) {
+        if (response.status === 401) {
             await refreshToken(user)
-            playlistsResponse = await fetch('https://api.spotify.com/v1/me/playlists', options)
+            response = await fetch(endpoint, options)
         }
 
-        const playlistsJson = await playlistsResponse.json()
-        res.send(JSON.stringify(playlistsJson))
+        return await response.json()
+    }
+
+    app.get('/playlists', async (req, res) => {
+        if (req.cookies.user_id === undefined) {
+            return res.sendStatus(403)
+        }
+
+        const user = users.find(user => user.id === req.cookies.user_id)
+        const playlists = await spotifyRequest('https://api.spotify.com/v1/me/playlists', user)
+
+        res.send(JSON.stringify(playlists))
+    })
+
+    app.get('/tracks', async (req, res) => {
+        const query = req.query
+
+        if ((Object.keys(query).length === 0 && query.constructor === Object) ||
+            query.playlistId === undefined) {
+            return res.sendStatus(422)
+        }
+
+        if (req.cookies.user_id === undefined) {
+            return res.sendStatus(403)
+        }
+
+        const user = users.find(user => user.id === req.cookies.user_id)
+        const tracks = await spotifyRequest(`https://api.spotify.com/v1/playlists/${query.playlistId}/tracks`, user)
+        res.send(JSON.stringify(tracks))
     })
 }
