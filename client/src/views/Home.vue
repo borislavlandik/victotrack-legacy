@@ -1,10 +1,10 @@
 <template>
 <div class="container">
-    <header class="header">
-        <h1 class="header__title">Угадай мелодию</h1>
-        <p class="header__subtitle">Сможете ли вы угадать все мелодии?</p>
-    </header>
     <div class="content-home">
+        <header class="header">
+            <h1 class="header__title">Угадай мелодию</h1>
+            <p class="header__subtitle">Сможете ли вы угадать все мелодии?</p>
+        </header>
         <div class="modes">
             <div class="mode">
                 <h3 class="mode__title">Создать комнату</h3>

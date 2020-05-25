@@ -1,23 +1,35 @@
-@mixin extra-small {
-    @media (min-width: #{$screen-extra-small}) {
+@mixin _320 {
+    @media (max-width: 320px) {
         @content;
     }
 }
 
-@mixin small {
-    @media (min-width: #{$screen-small}) {
+@mixin _480 {
+    @media (max-width: 480px) {
         @content;
     }
 }
 
-@mixin medium {
-    @media (min-width: #{$screen-medium}) {
+@mixin _600 {
+    @media (max-width: 600px) {
         @content;
     }
 }
 
-@mixin large {
-    @media (min-width: #{$screen-large}) {
+@mixin _768 {
+    @media (max-width: 768px) {
+        @content;
+    }
+}
+
+@mixin _900 {
+    @media (max-width: 900px) {
+        @content;
+    }
+}
+
+@mixin _1200 {
+    @media (max-width: 1200px) {
         @content;
     }
 }

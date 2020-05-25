@@ -1,5 +1,3 @@
-import Cookies from 'js-cookie'
-
 const apiUrl = 'http://localhost:3000'
 
 export default {
@@ -24,19 +22,15 @@ export default {
             })
     },
     async getPlaylistTracks (playlistId) {
-        if (playlistId === undefined) {
-            throw new Error('Playlist ID is required')
+        const response = await fetch(`${apiUrl}/tracks?playlistId=${playlistId}`, { credentials: 'include' })
+
+        if (response.status !== 200) {
+            return []
         }
 
-        const token = Cookies.get('user_token')
+        const tracksJson = await response.json()
 
-        const response = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }).then(data => data.json())
-
-        return response.items
+        return tracksJson.items
             .map(item => {
                 const artists = item.track.artists.map(artist => artist.name)
                 const trackName = item.track.name

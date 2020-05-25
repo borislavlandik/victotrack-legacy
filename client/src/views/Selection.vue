@@ -6,11 +6,6 @@
                 <p>Выберите плейлист для игры</p>
             </div>
             <playlist-slider :playlists="playlists"></playlist-slider>
-            <ul>
-                <li v-for="player in players" :key="player.id">
-                    {{player.name}}
-                </li>
-            </ul>
             <button @click="startGame" class="button centered">Начать игру</button>
         </div>
     </div>
@@ -26,20 +21,18 @@ export default {
     },
     data () {
         return {
-            roomId: null,
             playlists: []
         }
     },
     computed: {
-        players () {
-            return this.$store.state.players
-        },
         room () {
             return this.$store.state.room
         }
     },
     created () {
-        this.$socket.emit('createRoom', 'Leader Name')
+        if (this.$store.state.room === null) {
+            this.$socket.emit('createRoom', 'Leader Name')
+        }
     },
     async mounted () {
         this.playlists = await Spotify.getPlaylists()
