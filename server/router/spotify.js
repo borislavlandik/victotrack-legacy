@@ -1,15 +1,50 @@
 const fetch = require('node-fetch')
 const generators = require('../services/generators')
 
-const users = []
-
 const clientId = process.env.SPOTIFY_CLIENT_ID
 const secretId = process.env.SPOTIFY_SECRET_ID
 
 const clientUrl = 'http://localhost:8080'
 const redirectUrl = 'http://localhost:3000/authorized'
 
-module.exports = function (app) {
+const users = []
+
+async function refreshToken (user) {
+    const data = `grant_type=refresh_token&refresh_token=${user.refreshToken}`
+    const options = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            Authorization: `Basic ${Buffer.from(`${clientId}:${secretId}`).toString('base64')}`
+        },
+        body: data
+    }
+
+    const tokenResponse = await fetch('https://accounts.spotify.com/api/token', options)
+    const tokenJson = await tokenResponse.json()
+
+    user.accessToken = tokenJson.access_token
+    user.refreshToken = tokenJson.refresh_token
+}
+
+async function spotifyRequest (endpoint, user) {
+    const options = {
+        headers: {
+            Authorization: `Bearer ${user.accessToken}`
+        }
+    }
+
+    let response = await fetch(endpoint, options)
+
+    if (response.status === 401) {
+        await refreshToken(user)
+        response = await fetch(endpoint, options)
+    }
+
+    return await response.json()
+}
+
+module.exports.app = function (app) {
     app.get('/login', (req, res) => {
         const loginUrl = new URL('https:accounts.spotify.com/authorize')
         const state = generators.generateState(12)
@@ -74,41 +109,6 @@ module.exports = function (app) {
         }
     })
 
-    async function refreshToken (user) {
-        const data = `grant_type=refresh_token&refresh_token=${user.refreshToken}`
-        const options = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: `Basic ${Buffer.from(`${clientId}:${secretId}`).toString('base64')}`
-            },
-            body: data
-        }
-
-        const tokenResponse = await fetch('https://accounts.spotify.com/api/token', options)
-        const tokenJson = await tokenResponse.json()
-
-        user.accessToken = tokenJson.access_token
-        user.refreshToken = tokenJson.refresh_token
-    }
-
-    async function spotifyRequest (endpoint, user) {
-        const options = {
-            headers: {
-                Authorization: `Bearer ${user.accessToken}`
-            }
-        }
-
-        let response = await fetch(endpoint, options)
-
-        if (response.status === 401) {
-            await refreshToken(user)
-            response = await fetch(endpoint, options)
-        }
-
-        return await response.json()
-    }
-
     app.get('/playlists', async (req, res) => {
         if (req.cookies.user_id === undefined) {
             return res.sendStatus(403)
@@ -137,3 +137,6 @@ module.exports = function (app) {
         res.send(JSON.stringify(tracks))
     })
 }
+
+module.exports.users = users
+module.exports.request = spotifyRequest

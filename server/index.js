@@ -12,5 +12,6 @@ app.use(require('cors')({
 }))
 app.use(require('cookie-parser')())
 
-require('./router/spotify')(app)
-require('./router/sockets')(server)
+const spotify = require('./router/spotify')
+spotify.app(app)
+require('./router/sockets')(server, spotify)

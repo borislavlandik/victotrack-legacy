@@ -32,8 +32,11 @@ export default {
     },
     methods: {
         startGame () {
-            this.$socket.emit('addPlayer', this.roomId, 'Some Name', (data) => {
-                console.log(data)
+            this.$socket.emit('addPlayer', this.roomId, (data) => {
+                if (data.status === 'ok') {
+                    this.$store.state.room = this.roomId
+                    this.$router.push('waitingRoom')
+                }
             })
         }
     }

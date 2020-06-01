@@ -5,19 +5,25 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        selectedPlaylistIndex: null,
+        selectedPlaylist: null,
         room: null,
+        currentTrack: null,
         players: []
     },
     mutations: {
-        changePlaylistIndex (state, index) {
-            state.selectedPlaylistIndex = index
+        set (state, { key, value }) {
+            state[key] = value
+        }
+    },
+    actions: {
+        SOCKET_roomCreated ({ commit }, roomId) {
+            commit('set', { key: 'room', value: roomId })
         },
-        SOCKET_roomCreated (state, roomId) {
-            state.room = roomId
+        SOCKET_playersUpdate ({ commit }, players) {
+            commit('set', { key: 'players', value: players })
         },
-        SOCKET_playersUpdate (state, players) {
-            state.players = players
+        SOCKET_trackUpdate ({ commit }, track) {
+            commit('set', { key: 'currentTrack', value: track })
         }
     }
 })

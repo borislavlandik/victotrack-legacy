@@ -1,12 +1,41 @@
 const generators = require('../services/generators')
+// const fetch = require('node-fetch')
+const names = ['Happy', 'Crazy', 'Jazzy', 'Funky', 'Sunny']
 
 const rooms = []
 
-module.exports = function (server) {
+function getRandomName () {
+    return names[Math.floor(Math.random() * names.length)]
+}
+
+module.exports = function (server, spotify) {
     const io = require('socket.io').listen(server)
 
     io.on('connection', (socket) => {
-        socket.on('createRoom', (playerName) => {
+        function getCookie (name) {
+            const matches = socket.handshake.headers.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`))
+            return matches ? decodeURIComponent(matches[1]) : undefined
+        }
+
+        async function getTracks (playlistId) {
+            const userId = getCookie('user_id')
+            const user = spotify.users.find(user => user.id === userId)
+            const params = 'fields=items(track(album(images)%2C%20artists%2C%20name%2C%20preview_url))'
+            const tracks = await spotify.request(`https://api.spotify.com/v1/playlists/${playlistId}/tracks?${params}`, user)
+
+            return tracks.items
+                .filter(item => item.track.preview_url !== null)
+                .map(item => {
+                    return {
+                        name: item.track.name,
+                        artist: item.track.artists[0].name,
+                        image: item.track.album.images[0].url,
+                        preview: item.track.preview_url
+                    }
+                })
+        }
+
+        socket.on('createRoom', () => {
             const roomId = generators.generateRoomId(rooms)
 
             socket.join(roomId)
@@ -18,13 +47,12 @@ module.exports = function (server) {
                     leaderId: socket.id,
                     connected: [
                         {
-                            name: playerName,
+                            name: getRandomName(),
                             id: socket.id
                         }
                     ]
                 },
-                playlist: null,
-                tracks: {}
+                tracks: []
             }
             rooms.push(room)
 
@@ -35,7 +63,7 @@ module.exports = function (server) {
             console.log('Players: ', room.players.connected)
         })
 
-        socket.on('addPlayer', (roomId, playerName, response) => {
+        socket.on('addPlayer', (roomId, response) => {
             const room = rooms.find(room => room.roomId === roomId)
 
             if (room === undefined) {
@@ -60,18 +88,36 @@ module.exports = function (server) {
             }
 
             room.players.connected.push({
-                name: playerName,
+                name: getRandomName(),
                 id: socket.id
             })
 
             console.log('\x1b[32m%s\x1b[0m', 'PLAYER ADDED:', 'Room ID: ', room.roomId)
             console.log('Players: ', room.players.connected)
 
+            socket.join(roomId)
             socket.to(roomId).broadcast.emit('playersUpdate', room.players.connected)
 
             return response({
                 status: 'ok'
             })
         })
+
+        socket.on('startGame', async (roomId, playlistId) => {
+            const room = rooms.find(room => room.roomId === roomId)
+
+            if (room.players.leaderId === socket.id) {
+                console.log('Игра начата от имени лидера')
+                room.tracks = await getTracks(playlistId)
+                setTimeout(game, 1000, room, 0)
+            }
+        })
+
+        function game (room, index) {
+            socket.emit('trackUpdate', room.tracks[index].preview)
+            if (index <= 10) {
+                setTimeout(game, 10000, room, index + 1)
+            }
+        }
     })
 }

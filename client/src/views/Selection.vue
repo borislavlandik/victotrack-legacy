@@ -14,6 +14,7 @@
 <script>
 import PlaylistSlider from '@/components/PlaylistSlider'
 import Spotify from '@/services/spotify'
+import Cookies from 'js-cookie'
 
 export default {
     components: {
@@ -30,8 +31,10 @@ export default {
         }
     },
     created () {
-        if (this.$store.state.room === null) {
+        if (this.$store.state.room === null && Cookies.get('user_id')) {
             this.$socket.emit('createRoom', 'Leader Name')
+        } else {
+            this.$router.push('/')
         }
     },
     async mounted () {
@@ -39,7 +42,8 @@ export default {
     },
     methods: {
         startGame () {
-            if (this.$store.state.selectedPlaylistIndex !== null) {
+            if (this.$store.state.selectedPlaylist) {
+                this.$socket.emit('startGame', this.room, this.$store.state.selectedPlaylist)
                 this.$router.push('game')
             }
         }

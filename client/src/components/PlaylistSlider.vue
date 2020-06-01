@@ -47,7 +47,7 @@ export default {
     methods: {
         changePlaylist (index) {
             this.activeIndex = index
-            this.$store.commit('changePlaylistIndex', index)
+            this.$store.commit('set', { key: 'selectedPlaylist', value: this.playlists[index].id })
         }
     },
     components: {

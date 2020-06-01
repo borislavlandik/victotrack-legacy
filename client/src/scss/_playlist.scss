@@ -37,14 +37,14 @@
         position: absolute;
         top: 50%;
         transform: translate(0, -50%);
-        
+
         color: $text-color;
         text-align: center;
-        
+
         opacity: 0;
         transition: opacity .2s ease-in-out;
     }
-    
+
     &__image {
         background: $accent-color;
 
@@ -62,7 +62,6 @@
     }
 
     &.active {
-
         img {
             opacity: 0;
         }
