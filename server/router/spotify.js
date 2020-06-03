@@ -46,7 +46,7 @@ async function spotifyRequest (endpoint, user) {
 
 module.exports.app = function (app) {
     app.get('/login', (req, res) => {
-        const loginUrl = new URL('https:accounts.spotify.com/authorize')
+        const loginUrl = new URL('https://accounts.spotify.com/authorize')
         const state = generators.generateState(12)
         const params = {
             client_id: clientId,

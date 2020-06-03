@@ -1,33 +1,39 @@
 <template>
-<div class="container">
     <div class="content-home">
-        <header class="header">
-            <h1 class="header__title">Угадай мелодию</h1>
-            <p class="header__subtitle">Сможете ли вы угадать все мелодии?</p>
-        </header>
-        <div class="modes">
-            <div class="mode">
-                <h3 class="mode__title">Создать комнату</h3>
-                <a :href="serverUrl + '/login'" class="button">Продолжить со Spotify</a>
+        <div>
+            <div class="card">
+                <input class="input-text" type="text" placeholder="Ваше имя" v-model="nameId">
             </div>
-            <div class="mode">
-                <h3 class="mode__title">Войти в комнату</h3>
-                <input class="input-text centered" type="text" placeholder="Введите код" v-model="roomId">
+            <br/>
+            <div class="some-shit">
+                <div class="card">
+                    <input class="input-text" type="text" placeholder="Войти в комнату" v-model="roomId">
+                </div>
+                <button class="button arrow" @click="startGame">
+                    <div class="card arrow">
+                        <img alt="->" src="..\assets\images\icons\arrow.svg" draggable="false">
+                    </div>
+                </button>
             </div>
+            <br/>
+            <button class="button" @click="createRoom">
+                <div class="card">Создать комнату</div>
+            </button>
+            <h3 class="white-h3">Используя Spotify</h3>
         </div>
-        <button @click="startGame" class="button centered">Начать игру</button>
     </div>
-</div>
 </template>
 
 <script>
 import Mixin from '@/mixin'
+// import Cookies from 'js-cookie'
 
 export default {
     mixins: [Mixin],
     data () {
         return {
-            roomId: null
+            roomId: null,
+            nameId: null
         }
     },
     methods: {
@@ -38,6 +44,14 @@ export default {
                     this.$router.push('waitingRoom')
                 }
             })
+        },
+        createRoom () {
+            window.location.href = this.serverUrl + '/login'
+
+            // if (Cookies.get('user_id')) {
+            //     this.$router.push('/selection')
+            // } else {
+            // }
         }
     }
 }

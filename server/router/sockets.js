@@ -108,15 +108,24 @@ module.exports = function (server, spotify) {
 
             if (room.players.leaderId === socket.id) {
                 console.log('Игра начата от имени лидера')
-                room.tracks = await getTracks(playlistId)
+
+                const tracks = await getTracks(playlistId)
+                const trackSet = new Set()
+                while (trackSet.size !== 10) {
+                    trackSet.add(Math.floor(Math.random() * tracks.length))
+                }
+
+                room.tracks = Array.from(trackSet).map(index => tracks[index])
+                console.log(room.tracks)
+
                 setTimeout(game, 1000, room, 0)
             }
         })
 
         function game (room, index) {
-            socket.emit('trackUpdate', room.tracks[index].preview)
-            if (index <= 10) {
-                setTimeout(game, 10000, room, index + 1)
+            if (index < 10) {
+                socket.emit('trackUpdate', room.tracks[index].preview)
+                setTimeout(game, 1000, room, index + 1)
             }
         }
     })

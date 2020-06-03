@@ -7,6 +7,7 @@ export default new Vuex.Store({
     state: {
         selectedPlaylist: null,
         room: null,
+        name: null,
         currentTrack: null,
         players: []
     },
@@ -16,8 +17,8 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        SOCKET_roomCreated ({ commit }, roomId) {
-            commit('set', { key: 'room', value: roomId })
+        SOCKET_roomCreated ({ commit }, roomId, nameId) {
+            commit('set', { key: 'room', value: roomId, nameId })
         },
         SOCKET_playersUpdate ({ commit }, players) {
             commit('set', { key: 'players', value: players })

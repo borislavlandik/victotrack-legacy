@@ -1,13 +1,14 @@
 <template>
-    <div class="container">
-        <div class="content-selection">
-            <div class="selection-text">
-                <h2 class="selection__header">Комната: {{room}}</h2>
-                <p>Выберите плейлист для игры</p>
-            </div>
-            <playlist-slider :playlists="playlists"></playlist-slider>
-            <button @click="startGame" class="button centered">Начать игру</button>
+    <div class="content-selection">
+        <div class="selection-text">
+           <div class="card"><h2 class="selection__header">Комната: {{room}}</h2></div>
         </div>
+        <playlist-slider :playlists="playlists"></playlist-slider>
+
+        <button @click="startGame" class="button centered">
+            <div class="card">  Начать игру  </div>
+        </button>
+
     </div>
 </template>
 

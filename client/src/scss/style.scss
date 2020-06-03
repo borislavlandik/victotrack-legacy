@@ -1,9 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap');
+@import "/assets/fonts/SansRounded/SansRounded.css";
 
 @import "vars";
 @import "mixins";
+@import "animations";
 @import "content";
+@import "card";
 @import "home";
+@import "game";
 @import "buttons";
 @import "inputs";
 @import "playlist";
