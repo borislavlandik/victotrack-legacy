@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import Selection from '../views/Selection.vue'
 import Game from '../views/Game.vue'
 import Waiting from '../views/Waiting.vue'
+import Fin from '../views/Fin.vue'
 
 Vue.use(VueRouter)
 
@@ -38,6 +39,14 @@ const routes = [
         component: Waiting,
         meta: {
             title: 'Комната ожидания'
+        }
+    },
+    {
+        path: '/fin',
+        name: 'fin',
+        component: Fin,
+        meta: {
+            title: 'Конец игры'
         }
     }
 ]

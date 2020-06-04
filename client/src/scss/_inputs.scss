@@ -1,25 +1,21 @@
-.input-text {
-   // padding: 10px 20px;
-
+input {
     outline: none;
     border: none;
     background: none;
 
-    padding-left: 10px;
-    text-align: left;
     font-family: $font-family;
     font-size: 1em;
+    text-align: left;
     color: $text-color;
-
-   // transition: border .2s ease-in-out;
-    border-bottom: solid #999999;
-
 
     &::placeholder{
         color: #999999;
     }
+}
 
-   // &:focus {
-        // border: 2px solid $accent-color;
-  //  }
+.input-text {
+    padding-left: 10px;
+    padding-right: 10px;
+    border-bottom: 2px solid #999999;
+    border-radius: 2px;
 }

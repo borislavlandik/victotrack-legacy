@@ -1,18 +1,13 @@
 const generators = require('../services/generators')
-// const fetch = require('node-fetch')
-const names = ['Happy', 'Crazy', 'Jazzy', 'Funky', 'Sunny']
 
 const rooms = []
-
-function getRandomName () {
-    return names[Math.floor(Math.random() * names.length)]
-}
 
 module.exports = function (server, spotify) {
     const io = require('socket.io').listen(server)
 
     io.on('connection', (socket) => {
         function getCookie (name) {
+            console.log('GET COOKIES: ', name, socket.handshake.headers)
             const matches = socket.handshake.headers.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`))
             return matches ? decodeURIComponent(matches[1]) : undefined
         }
@@ -35,7 +30,18 @@ module.exports = function (server, spotify) {
                 })
         }
 
-        socket.on('createRoom', () => {
+        socket.on('isUserLogin', (response) => {
+            const userId = getCookie('user_id')
+            const user = spotify.users.find(user => user.id === userId)
+
+            if (user) {
+                return response('ok')
+            } else {
+                return response(undefined)
+            }
+        })
+
+        socket.on('createRoom', (name) => {
             const roomId = generators.generateRoomId(rooms)
 
             socket.join(roomId)
@@ -47,7 +53,7 @@ module.exports = function (server, spotify) {
                     leaderId: socket.id,
                     connected: [
                         {
-                            name: getRandomName(),
+                            name: name,
                             id: socket.id
                         }
                     ]
@@ -63,7 +69,7 @@ module.exports = function (server, spotify) {
             console.log('Players: ', room.players.connected)
         })
 
-        socket.on('addPlayer', (roomId, response) => {
+        socket.on('addPlayer', (roomId, name, response) => {
             const room = rooms.find(room => room.roomId === roomId)
 
             if (room === undefined) {
@@ -88,7 +94,7 @@ module.exports = function (server, spotify) {
             }
 
             room.players.connected.push({
-                name: getRandomName(),
+                name: name,
                 id: socket.id
             })
 
@@ -125,7 +131,7 @@ module.exports = function (server, spotify) {
         function game (room, index) {
             if (index < 10) {
                 socket.emit('trackUpdate', room.tracks[index].preview)
-                setTimeout(game, 1000, room, index + 1)
+                setTimeout(game, 30000, room, index + 1)
             }
         }
     })

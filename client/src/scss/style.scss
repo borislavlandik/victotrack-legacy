@@ -3,9 +3,7 @@
 @import "vars";
 @import "mixins";
 @import "animations";
-@import "content";
 @import "card";
-@import "home";
 @import "game";
 @import "buttons";
 @import "inputs";
@@ -17,10 +15,13 @@
     margin: 0;
 }
 
-h1, h2, h3, h4, h5, h6, p {
+h1, h2, h3, h4, h5, h6, p, li, table {
     font-family: $font-family;
     font-size: 18px;
     font-weight: normal;
+}
+li {
+    list-style-type: none;
 }
 
 .container {

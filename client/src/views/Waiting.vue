@@ -1,0 +1,33 @@
+<template>
+<div class="container">
+    <div class="content-game">
+        <div class="audio_block">
+                <!--TODO: Место под обложку текущего плейлиста,
+                           если еще не выбран, нужна заглушка-->
+        </div>
+
+        <div class="info-block">
+            <button @click="goHome" class="card button">
+              <h3>На главную</h3>
+            </button>
+            <div class="card">
+                <h3>Игрок:</h3>
+                <h3>Комната:</h3>
+            </div>
+            <div class="card">
+                <h3>Соперники:</h3>
+            </div>
+        </div>
+    </div>
+</div>
+</template>
+
+<script>
+export default {
+    methods: {
+        goHome () {
+            this.$router.push('/')
+        }
+    }
+}
+</script>

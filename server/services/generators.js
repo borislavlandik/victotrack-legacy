@@ -1,17 +1,10 @@
 module.exports = {
-    generateId (prefix) {
-        if (prefix === undefined) {
-            throw new Error('prefix is required')
-        }
-
-        return `${prefix}${(+new Date()).toString(16)}`
-    },
     generateRoomId (rooms) {
         const roomIds = rooms.map(room => room.roomId)
 
         let roomId
         while (true) {
-            roomId = Math.floor(Math.random() * 1000000)
+            roomId = Math.floor(Math.random() * 10000)
 
             if (roomIds.every(id => roomId !== id)) {
                 break

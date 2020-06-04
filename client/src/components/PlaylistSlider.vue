@@ -8,12 +8,6 @@
             </swiper-slide>
             <div class="playlist__pagination" slot="pagination"></div>
         </swiper>
-        <div class="playlist-next-btn">
-           <button class="button playlist__next"><!--&#62;--><div class="card"> <img alt="&#62;" src="..\assets\images\icons\toright.svg" draggable="false"></div></button>
-        </div>
-        <div class="playlist-prev-btn">
-            <button class="button playlist__prev"><!--&#60;--><div class="card"> <img alt="&#60;" src="..\assets\images\icons\toleft.svg" draggable="false"></div></button>
-        </div>
     </div>
 </template>
 
@@ -30,20 +24,14 @@ export default {
         return {
             swiperOptions: {
                 slidesPerView: 'auto',
-                slideToClickedSlide: true,
-                spaceBetween: 50,
-                centeredSlides: true,
+                spaceBetween: 72,
+                slidesOffsetBefore: 10,
                 pagination: {
                     el: '.swiper-pagination'
                 },
                 navigation: {
                     nextEl: '.playlist-next-btn',
                     prevEl: '.playlist-prev-btn'
-                },
-                mousewheel: {
-                    invert: true,
-                    sensitivity: 2,
-                    eventsTarget: 'playlist__slider'
                 }
             },
             activeIndex: null

@@ -11,7 +11,8 @@ export default {
         const playlistsJson = await response.json()
         const placeholder = 'http://placekitten.com/250/250'
 
-        return playlistsJson.items
+        console.log('PLAYLISTS', playlistsJson)
+        const filteredPlaylists = playlistsJson.items
             .filter(item => item.tracks.total >= minTracks)
             .map(({ name, id, images }) => {
                 return {
@@ -20,6 +21,9 @@ export default {
                     image: images[0] ? images[0].url : placeholder
                 }
             })
+
+        console.log('PLAYLISTS FROM CLIENT SPOTIFY.JS: ', filteredPlaylists)
+        return filteredPlaylists
     },
     async getPlaylistTracks (playlistId) {
         const response = await fetch(`${apiUrl}/tracks?playlistId=${playlistId}`, { credentials: 'include' })

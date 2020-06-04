@@ -1,8 +1,32 @@
-.gamer {
+/*.gamer {
     display: flex;
     height: auto;
     width: 30%;
+
+    max-width: 220px;
+    flex-direction: column;
+  //  align-items: flex-end;
+    justify-content: center;
+  // margin: 0 0 0 auto;
+    margin-bottom: 20px;
+    // Данил дописал отступ, потому что кто-то решил, что отступов не должно быть, а также закоментил 10 строчку
+}
+*/
+.content-game{
+    display:flex;
+   // margin-left: auto;
+}
+
+.audio_block{
+    display:flex;
     flex-direction: column;
     justify-content: center;
-    margin: 0 0 0 auto;
 }
+
+.info-block {
+    display: flex;
+    height: auto;
+    margin-left: auto;
+    flex-direction: column;
+    justify-content: center;
+ }

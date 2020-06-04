@@ -11,6 +11,11 @@ export default new Vuex.Store({
         currentTrack: null,
         players: []
     },
+    getters: {
+        opponents (state) {
+            return state.players.filter(player => player.name !== state.name)
+        }
+    },
     mutations: {
         set (state, { key, value }) {
             state[key] = value
