@@ -17,6 +17,17 @@
     opacity: 0;
 }
 
+.fade-top-enter-active, .fade-top-leave-active {
+    transition: opacity .5s, transform .5s;
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+}
+
+.fade-top-enter, .fade-top-leave-to {
+    transform: translate3d(0, -25%, 0);
+    opacity: 0;
+}
+
 @keyframes shakeX {
     from, to {
       transform: translate3d(0, 0, 0);

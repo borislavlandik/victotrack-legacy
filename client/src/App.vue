@@ -4,9 +4,11 @@
             <img alt="background" :src="randomImage">
         </div>
         <div class="container">
-            <header class="header">
-                <h1 class="header__title">{{title}}</h1>
-            </header>
+            <transition name="fade" mode="out-in">
+                <header class="header" :key="title">
+                    <h1 class="header__title">{{title}}</h1>
+                </header>
+            </transition>
             <transition name="fade" mode="out-in">
                 <router-view/>
             </transition>

@@ -1,8 +1,9 @@
 <template>
 <div class="container">
     <div class="content-game">
-        <div class="audio_block">
+        <div class="results">
                 <!--TODO: Место под обложку плейлиста-->
+                <img class="curPlaylist" :src="currentPlaylist" alt="Playlist Image">
                 <div class="card">
                     <h3>Победитель - jaymay3!</h3>  <!--TODO: Вставить имя победителя-->
                 </div>
@@ -37,6 +38,11 @@
 </style>
 <script>
 export default {
+    computed: {
+        currentPlaylist () {
+            return this.$store.state.playlistImage
+        }
+    },
     methods: {
         goHome () {
             this.$router.push('/')

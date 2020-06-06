@@ -9,6 +9,13 @@ export default {
         }
 
         const playlistsJson = await response.json()
+
+        console.log('PLAYLIST JSON: ', playlistsJson)
+
+        if (playlistsJson.error) {
+            return this.getPlaylists()
+        }
+
         const placeholder = 'http://placekitten.com/250/250'
 
         console.log('PLAYLISTS', playlistsJson)

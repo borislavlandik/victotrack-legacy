@@ -13,19 +13,19 @@
             </div>
         </div>
 
-        <playlist-slider :playlists="playlists"></playlist-slider>
+        <playlist-slider @changePlaylist="playlistChanged" :playlists="playlists"></playlist-slider>
 
         <div class="selection-menu">
             <button @click="goHome" class="card button">На главную</button>
             <div class="playlist-nav">
                 <div class="playlist-prev-btn">
-                    <button class="card button">
-                        <img alt="&#60;" src="..\assets\images\icons\toleft.svg" draggable="false">
+                    <button class="card button sqr">
+                        <img class="icons" alt="&#60;" src="..\assets\images\icons\toleft.svg" draggable="false">
                     </button>
                 </div>
                 <div class="playlist-next-btn">
-                    <button class="card button">
-                        <img alt="&#62;" src="..\assets\images\icons\toright.svg" draggable="false">
+                    <button class="card button sqr">
+                        <img class="icons" alt="&#62;" src="..\assets\images\icons\toright.svg" draggable="false">
                     </button>
                 </div>
             </div>
@@ -79,6 +79,12 @@ export default {
         },
         goHome () {
             this.$router.push('/')
+        },
+        playlistChanged (index) {
+            const currentPlaylist = this.playlists[index]
+            this.$store.commit('set', { key: 'selectedPlaylist', value: currentPlaylist.id })
+            this.$store.commit('set', { key: 'playlistImage', value: currentPlaylist.image })
+            this.$socket.emit('changePlaylistImage', this.room, currentPlaylist.image)
         }
     }
 }

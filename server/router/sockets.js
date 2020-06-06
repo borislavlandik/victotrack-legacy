@@ -8,6 +8,9 @@ module.exports = function (server, spotify) {
     io.on('connection', (socket) => {
         function getCookie (name) {
             console.log('GET COOKIES: ', name, socket.handshake.headers)
+            if (socket.handshake.headers.cookie === undefined) {
+                return undefined
+            }
             const matches = socket.handshake.headers.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`))
             return matches ? decodeURIComponent(matches[1]) : undefined
         }
@@ -109,6 +112,10 @@ module.exports = function (server, spotify) {
             })
         })
 
+        socket.on('changePlaylistImage', (roomId, image) => {
+            socket.to(roomId).emit('changePlaylistImage', image)
+        })
+
         socket.on('startGame', async (roomId, playlistId) => {
             const room = rooms.find(room => room.roomId === roomId)
 
@@ -124,13 +131,21 @@ module.exports = function (server, spotify) {
                 room.tracks = Array.from(trackSet).map(index => tracks[index])
                 console.log(room.tracks)
 
+                console.log('\x1b[32m%s\x1b[0m', 'ОТПРАВКА СОБЫТИЯ ИГРОКАМ В ' + roomId)
+                socket.to(roomId).emit('gameStarted')
                 setTimeout(game, 1000, room, 0)
             }
         })
 
         function game (room, index) {
+            if (index === 10) {
+                room.isGameStarted = false
+                room.tracks = []
+            }
             if (index < 10) {
-                socket.emit('trackUpdate', room.tracks[index].preview)
+                console.log('\x1b[31m\x1b[47m%s\x1b[0m', `ОТПРАВКА ТРЕКА в ${room.roomId}`)
+                console.log(room.tracks[index])
+                io.in(room.roomId).emit('trackUpdate', room.tracks[index].preview)
                 setTimeout(game, 30000, room, index + 1)
             }
         }

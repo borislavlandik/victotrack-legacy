@@ -1,41 +1,24 @@
 <template>
-<!--<div class="container">
-    <div class="content-game">
-        <div class="audio_block">
-            <audio ref="audio" :src="track" autoplay></audio>
-        </div>
-        <div class="card audio_block">
-            <input class="input-text" type="text" placeholder="Артист, трек" v-model="artistId">
-        </div>
-
-        <div class="gamer">
-            <button @click="goHome" class="button">На главную</button>
-        </div>
-        <div class="card gamer">
-            <h3>Игрок:</h3>
-            <h3>Комната:</h3>
-        </div>
-        <div class="card gamer">
-            <h3>Соперники:</h3>
-        </div>
-    </div>
-</div>-->
-
 <div class="container">
     <div class="content-game">
-        <div class="audio_block">
-            <audio ref="audio" :src="track" autoplay></audio>
-            <div class="send ans">
-                <div class="card button">
-                    <input class="input-text" type="text" placeholder="Артист, трек" v-model="answer">
+            <div class="game-zone">
+                <div class="album-timer">
+                    <img class="curPlaylist" :src="currentPlaylist" alt="Playlist Image">
+                    <div class="card sqr">
+                       <h1 class="icons">{{currentTime}}</h1>
+                    </div>
                 </div>
-                <transition name="fade-right">
-                    <button class="card button button--image button--left-offset" v-show="answer">
-                        <img alt="->" src="..\assets\images\icons\arrow.svg" draggable="false">
-                    </button>
-                </transition>
+                <div class = "input-zone">
+                    <div class="card">
+                        <input class="input-text" type="text" placeholder="Артист, трек" v-model="answer">
+                    </div>
+                    <transition name="fade-right">
+                        <button class="card button sqr button--image button--left-offset" v-show="answer">
+                            <img class="icons" alt="->" src="..\assets\images\icons\arrow.svg" draggable="false">
+                        </button>
+                    </transition>
+                </div>
             </div>
-        </div>
 
         <div class="info-block">
             <button @click="goHome" class="card button">
@@ -50,29 +33,55 @@
             </div>
         </div>
     </div>
+<audio ref="audio" :src="track" autoplay></audio>
 </div>
-
 </template>
 
 <script>
 export default {
     data () {
         return {
-            answer: null
+            answer: null,
+            timer: null,
+            currentTime: 30
         }
     },
     computed: {
         track () {
             return this.$store.state.currentTrack
+        },
+        currentPlaylist () {
+            return this.$store.state.playlistImage
         }
     },
     mounted () {
         console.log(this.$refs.audio)
         this.$refs.audio.volume = 0.2
+        this.startTime()
     },
     methods: {
         goHome () {
             this.$router.push('/')
+        },
+        startTime () {
+            setTimeout(() => {
+                this.timer = setInterval(() => {
+                    this.currentTime--
+                    if (this.currentTime === -1) {
+                        this.currentTime = 30
+                    }
+                }, 1000)
+            }, 1000)
+        },
+        stopTimer () {
+            clearInterval(this.timer)
+        }
+    },
+    watch: {
+        currentTime (time) {
+            if (time === -2) {
+                this.stopTimer()
+            }
         }
     }
 }

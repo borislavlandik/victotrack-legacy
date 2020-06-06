@@ -24,7 +24,6 @@ export default {
         return {
             swiperOptions: {
                 slidesPerView: 'auto',
-                spaceBetween: 72,
                 slidesOffsetBefore: 10,
                 pagination: {
                     el: '.swiper-pagination'
@@ -40,7 +39,7 @@ export default {
     methods: {
         changePlaylist (index) {
             this.activeIndex = index
-            this.$store.commit('set', { key: 'selectedPlaylist', value: this.playlists[index].id })
+            this.$emit('changePlaylist', this.activeIndex)
         }
     },
     components: {
@@ -51,6 +50,15 @@ export default {
 
 <style lang="scss">
     .swiper-slide {
+        margin: 0 36px;
         width: 250px;
+
+        &:first-child {
+            margin-left: 0;
+        }
+
+        &:last-child {
+            margin-right: 0;
+        }
     }
 </style>

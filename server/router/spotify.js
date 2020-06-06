@@ -40,12 +40,13 @@ async function spotifyRequest (endpoint, user) {
         }
     }
 
-    let response = await fetch(endpoint, options)
+    const response = await fetch(endpoint, options)
 
     console.log(response)
-    if (response.status !== 200) {
+    if (response.status === 401) {
+        console.log('STATUS 401 \n\n\n\n')
         await refreshToken(user)
-        response = await fetch(endpoint, options)
+        return spotifyRequest(endpoint, user)
     }
 
     return await response.json()

@@ -4,7 +4,7 @@ module.exports = {
 
         let roomId
         while (true) {
-            roomId = Math.floor(Math.random() * 10000)
+            roomId = Math.floor(Math.random() * 9000 + 1000)
 
             if (roomIds.every(id => roomId !== id)) {
                 break
