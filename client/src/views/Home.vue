@@ -57,7 +57,7 @@ export default {
             }
 
             Cookie.set('name', this.name)
-            this.$socket.emit('addPlayer', this.roomId, this.name, data => {
+            this.$socket.client.emit('addPlayer', this.roomId, this.name, data => {
                 if (data.status === 'ok') {
                     this.$store.state.room = this.roomId
                     this.$router.push('waiting')
@@ -72,7 +72,7 @@ export default {
             }
 
             Cookie.set('name', this.name)
-            this.$socket.emit('isUserLogin', status => {
+            this.$socket.client.emit('isUserLogin', status => {
                 if (status === 'ok') {
                     this.$router.push('selection')
                 } else {

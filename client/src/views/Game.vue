@@ -39,11 +39,17 @@
 
 <script>
 export default {
+    sockets: {
+        trackUpdate (track) {
+            this.$store.commit('set', { key: 'currentTrack', value: track })
+            this.startTime()
+        }
+    },
     data () {
         return {
             answer: null,
             timer: null,
-            currentTime: 30
+            currentTime: 29
         }
     },
     computed: {
@@ -55,33 +61,24 @@ export default {
         }
     },
     mounted () {
-        console.log(this.$refs.audio)
         this.$refs.audio.volume = 0.2
-        this.startTime()
     },
     methods: {
         goHome () {
             this.$router.push('/')
         },
         startTime () {
-            setTimeout(() => {
-                this.timer = setInterval(() => {
-                    this.currentTime--
-                    if (this.currentTime === -1) {
-                        this.currentTime = 30
-                    }
-                }, 1000)
+            this.currentTime = 29
+
+            this.timer = setInterval(() => {
+                this.currentTime--
+                if (this.currentTime === 0) {
+                    this.stopTimer()
+                }
             }, 1000)
         },
         stopTimer () {
             clearInterval(this.timer)
-        }
-    },
-    watch: {
-        currentTime (time) {
-            if (time === -2) {
-                this.stopTimer()
-            }
         }
     }
 }

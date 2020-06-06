@@ -25,6 +25,11 @@
 
 <script>
 export default {
+    sockets: {
+        gameStarted () {
+            this.$router.push('game')
+        }
+    },
     methods: {
         goHome () {
             this.$router.push('/')
@@ -33,16 +38,6 @@ export default {
     computed: {
         currentPlaylist () {
             return this.$store.state.playlistImage
-        },
-        isGameStarted () {
-            return this.$store.state.isGameStarted
-        }
-    },
-    watch: {
-        isGameStarted (state) {
-            if (state) {
-                this.$router.push('game')
-            }
         }
     }
 }

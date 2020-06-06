@@ -61,7 +61,7 @@ export default {
     },
     created () {
         if (Cookies.get('user_id')) {
-            this.$socket.emit('createRoom', this.name)
+            this.$socket.client.emit('createRoom', this.name)
         } else {
             this.$router.push('/')
         }
@@ -73,7 +73,7 @@ export default {
     methods: {
         startGame () {
             if (this.$store.state.selectedPlaylist) {
-                this.$socket.emit('startGame', this.room, this.$store.state.selectedPlaylist)
+                this.$socket.client.emit('startGame', this.room, this.$store.state.selectedPlaylist)
                 this.$router.push('game')
             }
         },
@@ -84,7 +84,7 @@ export default {
             const currentPlaylist = this.playlists[index]
             this.$store.commit('set', { key: 'selectedPlaylist', value: currentPlaylist.id })
             this.$store.commit('set', { key: 'playlistImage', value: currentPlaylist.image })
-            this.$socket.emit('changePlaylistImage', this.room, currentPlaylist.image)
+            this.$socket.client.emit('changePlaylistImage', this.room, currentPlaylist.image)
         }
     }
 }
