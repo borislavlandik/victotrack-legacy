@@ -5,6 +5,7 @@ import Selection from '../views/Selection.vue'
 import Game from '../views/Game.vue'
 import Waiting from '../views/Waiting.vue'
 import Fin from '../views/Fin.vue'
+import Redirect from '../views/Redirect.vue'
 
 Vue.use(VueRouter)
 
@@ -47,6 +48,14 @@ const routes = [
         component: Fin,
         meta: {
             title: 'Конец игры'
+        }
+    },
+    {
+        path: '/redirect',
+        name: 'redirect',
+        component: Redirect,
+        meta: {
+            title: 'Перенаправление'
         }
     }
 ]

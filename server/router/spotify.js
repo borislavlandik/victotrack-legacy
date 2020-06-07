@@ -10,9 +10,6 @@ const redirectUrl = 'http://localhost:3000/authorized'
 const users = []
 
 async function refreshToken (user) {
-    console.log('\x1b[45m', 'ИСПОЛЬЗОВАНИЕ REFRESH_TOKEN')
-    console.log('OLD', user)
-
     const data = `grant_type=refresh_token&refresh_token=${user.refreshToken}`
     const options = {
         method: 'POST',
@@ -26,11 +23,7 @@ async function refreshToken (user) {
     const tokenResponse = await fetch('https://accounts.spotify.com/api/token', options)
     const tokenJson = await tokenResponse.json()
 
-    console.log('TOKEN RESPONSE JSON', tokenJson)
-
     user.accessToken = tokenJson.access_token
-
-    console.log('NEW', user)
 }
 
 async function spotifyRequest (endpoint, user) {
@@ -42,9 +35,7 @@ async function spotifyRequest (endpoint, user) {
 
     const response = await fetch(endpoint, options)
 
-    console.log(response)
     if (response.status === 401) {
-        console.log('STATUS 401 \n\n\n\n')
         await refreshToken(user)
         return spotifyRequest(endpoint, user)
     }
@@ -113,7 +104,7 @@ module.exports.app = function (app) {
             }
 
             res.cookie('user_id', userId)
-            res.redirect(`${clientUrl}/selection`)
+            res.redirect(`${clientUrl}/redirect`)
         }
     })
 

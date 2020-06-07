@@ -2,13 +2,13 @@
     <div class="content-home">
         <aside class="main-menu">
             <div class="main-menu__element">
-                <div class="card" :class="{'shake': required}">
+                <div class="card" :class="{'shake': requiredName}">
                     <input class="input-text" type="text" placeholder="Ваше имя" :value="name" @input="updateName" spellcheck="false">
                 </div>
             </div>
             <div class="main-menu__element">
                 <div class="join-room">
-                    <div class="card">
+                    <div class="card" :class="{'shake': invalidRoom}">
                         <input class="input-text" type="text" placeholder="Войти в комнату" v-model="roomId" @keypress.enter="startGame">
                     </div>
                     <transition name="fade-right">
@@ -40,7 +40,8 @@ export default {
         return {
             roomId: null,
             show: false,
-            required: false
+            requiredName: false,
+            invalidRoom: false
         }
     },
     computed: {
@@ -51,32 +52,44 @@ export default {
     methods: {
         startGame () {
             if (!this.name) {
-                this.required = true
-                setTimeout(() => { this.required = false }, 300)
+                this.requiredName = true
+                setTimeout(() => { this.requiredName = false }, 300)
                 return
             }
 
-            Cookie.set('name', this.name)
+            Cookie.set('name', this.name, { sameSite: 'lax' })
             this.$socket.client.emit('addPlayer', this.roomId, this.name, data => {
                 if (data.status === 'ok') {
                     this.$store.state.room = this.roomId
                     this.$router.push('waiting')
+                } else {
+                    this.invalidRoom = true
+                    setTimeout(() => { this.invalidRoom = false }, 300)
                 }
             })
         },
         createRoom () {
             if (!this.name) {
-                this.required = true
-                setTimeout(() => { this.required = false }, 300)
+                this.requiredName = true
+                setTimeout(() => { this.requiredName = false }, 300)
                 return
             }
 
-            Cookie.set('name', this.name)
-            this.$socket.client.emit('isUserLogin', status => {
+            Cookie.set('name', this.name, { sameSite: 'lax' })
+            this.$socket.client.emit('isUserLogin', Cookie.get('user_id'), status => {
                 if (status === 'ok') {
                     this.$router.push('selection')
                 } else {
-                    window.location.href = this.$store.state.urls.loginUrl
+                    const storageEvent = () => {
+                        if (localStorage.getItem('redirect') === 'ok') {
+                            localStorage.removeItem('redirect')
+                            window.removeEventListener('storage', storageEvent)
+                            this.$router.push('selection')
+                        }
+                    }
+
+                    window.addEventListener('storage', storageEvent)
+                    window.open(this.$store.state.urls.loginUrl)
                 }
             })
         },

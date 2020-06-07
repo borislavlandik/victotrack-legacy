@@ -5,7 +5,7 @@
                 <h3>Игрок: {{name}}</h3>
                 <h3>Комната: {{room}}</h3>
             </div>
-            <div class="card game-data__players">
+            <div class="card game-data__players" v-if="opponents.length > 0">
                 <h3>Соперники:</h3>
                 <ul class="players">
                     <li v-for="(opponent, index) in opponents" :key="index">{{opponent.name}}</li>
@@ -73,7 +73,7 @@ export default {
     methods: {
         startGame () {
             if (this.$store.state.selectedPlaylist) {
-                this.$socket.client.emit('startGame', this.room, this.$store.state.selectedPlaylist)
+                this.$socket.client.emit('startGame', this.room, Cookies.get('user_id'), this.$store.state.selectedPlaylist)
                 this.$router.push('game')
             }
         },

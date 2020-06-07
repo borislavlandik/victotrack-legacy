@@ -1,6 +1,6 @@
 module.exports = {
     generateRoomId (rooms) {
-        const roomIds = rooms.map(room => room.roomId)
+        const roomIds = [...rooms.keys()]
 
         let roomId
         while (true) {

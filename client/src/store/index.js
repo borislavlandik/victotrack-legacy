@@ -15,7 +15,6 @@ export default new Vuex.Store({
         room: null,
         selectedPlaylist: null,
         playlistImage: 'https://baconmockup.com/250/250',
-        currentTrack: null,
         players: []
     },
     getters: {
