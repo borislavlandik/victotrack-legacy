@@ -38,3 +38,33 @@ button {
     margin: auto auto;
 
 }
+
+@media (max-width: 480px) {
+    .icons {
+        display:block;
+        width: auto;
+        height: auto;
+        max-height: 60%;
+        margin: auto auto;
+    }
+    .button {
+        display: inline-block;
+        position: relative;
+        max-height: 45;
+        font-size: 15px;
+        &--left-offset {
+            margin-left: 20px;
+        }
+
+       &.centered {
+           left: 50%;
+           transform: translate(-50%);
+       }
+
+       &.stretch {
+           width:100%;
+       }
+
+
+    }
+}

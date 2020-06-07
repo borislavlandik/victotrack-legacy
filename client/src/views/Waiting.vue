@@ -1,8 +1,6 @@
 <template>
 <div class="content-game">
     <div class="audio_block">
-            <!--TODO: Место под обложку текущего плейлиста,
-                        если еще не выбран, нужна заглушка-->
         <img class="curPlaylist" :src="currentPlaylist" alt="Playlist Image">
     </div>
 
@@ -33,6 +31,7 @@ export default {
     },
     methods: {
         goHome () {
+            this.$socket.client.emit('removePlayer', this.$store.state.room)
             this.$router.push('/')
         }
     },
@@ -52,3 +51,8 @@ export default {
     }
 }
 </script>
+
+<style lang="scss">
+@media (max-width: 480px) {
+}
+</style>

@@ -68,7 +68,6 @@ export default {
     },
     async mounted () {
         this.playlists = await Spotify.getPlaylists()
-        console.log(this.playlists)
     },
     methods: {
         startGame () {
@@ -78,6 +77,7 @@ export default {
             }
         },
         goHome () {
+            this.$socket.client.emit('removeRoom', this.$store.state.room)
             this.$router.push('/')
         },
         playlistChanged (index) {
@@ -120,5 +120,25 @@ export default {
     .playlist-prev-btn {
         margin-right: 50px;
     }
+}
+@media (max-width: 480px) {
+    .game-data {
+        display: flex;
+        position: relative;
+        top: auto;
+        align-items: flex-start;
+
+        &__room {
+            margin-right: 0;
+        }
+    }
+    .playlist-nav {
+    display: flex;
+    flex-direction: row;
+
+    .playlist-prev-btn {
+        margin-right: 2px;
+    }
+}
 }
 </style>

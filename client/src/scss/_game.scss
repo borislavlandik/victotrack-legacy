@@ -25,10 +25,10 @@
 .album-timer {
     display:flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: flex-start;
 }
 
-.input-zone{
+.input-zone {
   display:flex;
   flex-direction: row;
   justify-content: flex-start;

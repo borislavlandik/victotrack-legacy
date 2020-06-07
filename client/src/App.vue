@@ -60,4 +60,28 @@ export default {
         text-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
     }
 }
+@media (max-width: 480px) {
+    .background-image{
+        position: absolute;
+        left: 0;
+        right: 0;
+        z-index: -1;
+
+        & img {
+            height: 100vh;
+            width: 100vw;
+            object-fit: cover;
+            vertical-align: middle;
+        }
+    }
+    .header {
+        &__title {
+                font-size: 2.4em;
+            }
+    }
+    #app {
+        height: 100vh;
+        color: $text-color;
+    }
+}
 </style>

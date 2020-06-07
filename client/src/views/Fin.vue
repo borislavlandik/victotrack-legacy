@@ -1,30 +1,15 @@
 <template>
 <div class="content-game">
     <div class="results">
-            <!--TODO: Место под обложку плейлиста-->
             <img class="curPlaylist" :src="currentPlaylist" alt="Playlist Image">
-            <!--TODO: Вставить имя победителя-->
-            <!-- <div class="card">
-                <h3>Победитель - jaymay3!</h3>
-            </div> -->
+            <div class="card" v-if="scores && scores.length > 1 && scores[0].score !== scores[1].score">
+                <h3>Победитель - {{winner.name}}</h3>
+            </div>
             <div class="card">
-                <!--TODO: Заменить на имена и очки-->
-                <table>
-                    <tr>
-                        <td>5 песен</td>
-                        <td class="th-right">jaymay3</td>
-                    </tr>
-                    <tr>
-                        <td>3 песни</td>
-                        <td class="th-right">meloman17</td>
-                    </tr>
-                    <tr>
-                        <td>2 песни</td>
-                        <td class="th-right">nerd2002</td>
-                    </tr>
-                    <tr>
-                        <td>1 песня</td>
-                        <td class="th-right">shalashaska</td>
+                <table class="score-table">
+                    <tr v-for="(score, index) in scores" :key="index">
+                        <td>{{score.score}} б.</td>
+                        <td class="th-right">{{score.name}}</td>
                     </tr>
                 </table>
             </div>
@@ -42,21 +27,22 @@
 </div>
 </template>
 
-<style>
-    .th-right{
-        text-align:right;
-        margin-left:auto;
-    }
-</style>
 <script>
 export default {
     computed: {
         currentPlaylist () {
             return this.$store.state.playlistImage
+        },
+        scores () {
+            return this.$store.state.scores
+        },
+        winner () {
+            return this.scores[0] || ''
         }
     },
     methods: {
         goHome () {
+            this.$socket.client.emit('removeRoom', this.$store.state.room)
             this.$router.push('/')
         },
         goGame () {
@@ -66,5 +52,15 @@ export default {
         }
     }
 }
-
 </script>
+
+<style lang="scss">
+    .score-table {
+        width: 100%;
+    }
+
+    .th-right{
+        text-align:right;
+        margin-left:auto;
+    }
+</style>

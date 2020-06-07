@@ -136,4 +136,30 @@ export default {
             text-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
         }
     }
+@media (max-width: 480px) {
+.content-home {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        .float {
+            display: inline-block;
+            position: absolute;
+            margin-left: calc(100% + 20px);
+        }
+
+        .white-h3 {
+            display: flex;
+            width: 100%;
+        }
+        .main-menu {
+            display: flex;
+            flex-direction: column;
+            &__element {
+                position: relative;
+            }
+        }
+
+    }
+
+}
 </style>

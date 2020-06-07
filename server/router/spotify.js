@@ -27,6 +27,10 @@ async function refreshToken (user) {
 }
 
 async function spotifyRequest (endpoint, user) {
+    if (!user || !endpoint) {
+        return null
+    }
+
     const options = {
         headers: {
             Authorization: `Bearer ${user.accessToken}`
