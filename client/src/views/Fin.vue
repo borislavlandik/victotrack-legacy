@@ -14,12 +14,12 @@
         </div>
         <div class="results">
             <div class="card" v-if="scores && scores.length > 1 && scores[0].score !== scores[1].score">
-                <h3>Победитель - {{winner.name}}</h3>
+                <h3 id="this-text-center" class="text-center" data-style="center">Победитель - {{winner.name}}</h3>
             </div>
             <div class="card">
                 <table class="score-table">
                     <tr v-for="(score, index) in scores" :key="index">
-                        <td>{{score.score}} б.</td>
+                        <td>{{score.score}} {{getScores(score.score)}}</td>
                         <td class="th-right">{{score.name}}</td>
                     </tr>
                 </table>
@@ -72,6 +72,14 @@ export default {
                     this.$router.push('waiting')
                 }
             })
+        },
+        getScores (n) {
+            n = Math.abs(n) % 100
+            const n1 = n % 10
+            if (n > 10 && n < 20) { return 'баллов' }
+            if (n1 > 1 && n1 < 5) { return 'балла' }
+            if (n1 === 1) { return 'балл' }
+            return 'баллов'
         }
     }
 }
@@ -85,5 +93,9 @@ export default {
     .th-right{
         text-align:right;
         margin-left:auto;
+    }
+
+    #this-text-center.text-center[data-style="center"] {
+        text-align: center;
     }
 </style>

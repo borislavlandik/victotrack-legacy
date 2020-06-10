@@ -7,6 +7,7 @@ class Player {
         this.clientId = Buffer.from(`${id}:+:${name}`).toString('base64')
         this.name = name
         this.scores = 0
+        this.isReady = false
     }
 }
 
@@ -14,7 +15,7 @@ class Room {
     constructor (id) {
         this.roomId = id
         this.isGameStarted = false
-        this.rounds = 3
+        this.rounds = 10
         this.players = new Map()
         this.tracks = []
         this.currentPlaylist = {
@@ -31,6 +32,12 @@ class Room {
         const player = new Player(id, name)
         this.players.set(id, player)
         return player
+    }
+
+    tryStart (io) {
+        if ([...this.players.values()].every(player => player.isReady)) {
+            this.startGame(io)
+        }
     }
 
     startGame (io) {
@@ -74,7 +81,7 @@ class Room {
     checkAnswer (io, id, answer) {
         const player = this.players.get(id)
 
-        if (!this.isGameStarted || !player) {
+        if (!this.isGameStarted || player === undefined) {
             return
         }
 
@@ -100,6 +107,7 @@ class Room {
 
         this.players.forEach(player => {
             player.scores = 0
+            player.isReady = false
         })
     }
 }
@@ -171,6 +179,13 @@ module.exports = function (server, spotify) {
             socket.to(roomId).emit('changePlaylist', playlist)
         })
 
+        socket.on('playerReady', (roomId) => {
+            const room = rooms.get(roomId)
+
+            room.players.get(socket.id).isReady = true
+            room.tryStart(io)
+        })
+
         socket.on('startGame', async (roomId, userId, playlistId) => {
             const room = rooms.get(roomId)
 
@@ -188,20 +203,23 @@ module.exports = function (server, spotify) {
 
                 for (let i = 0; i < clearTracks.length; i += Math.floor(Math.random() * 3 + 1)) {
                     const track = clearTracks[i]
+                    const randomIndex = Math.floor(Math.random() * clearTracks.length)
 
                     if (Math.random() < 0.5) {
-                        const randomTrack = clearTracks.find(t => t.name !== track.name)
+                        const randomTrack = clearTracks.find((t, ind) => t.name !== track.name && ind >= randomIndex)
 
                         if (randomTrack !== undefined && track.artist !== randomTrack.artist) {
+                            console.log('ДОБАВЛЕНИЕ: ', track.artist, randomTrack.name)
                             randomTracks.push({
                                 artist: track.artist,
                                 name: randomTrack.name
                             })
                         }
                     } else {
-                        const randomTrack = clearTracks.find(t => t.artist !== track.artist)
+                        const randomTrack = clearTracks.find((t, ind) => t.artist !== track.artist && ind >= randomIndex)
 
                         if (randomTrack !== undefined && track.name !== randomTrack.name) {
+                            console.log('ДОБАВЛЕНИЕ: ', randomTrack.artist, track.name)
                             randomTracks.push({
                                 artist: randomTrack.artist,
                                 name: track.name
@@ -221,7 +239,8 @@ module.exports = function (server, spotify) {
                 room.tracks = Array.from(trackSet).map(index => tracks[index])
 
                 socket.to(roomId).emit('gameStarted')
-                setTimeout(() => room.startGame(io), 1000)
+                room.players.get(socket.id).isReady = true
+                room.tryStart(io)
             }
         })
 
@@ -231,7 +250,6 @@ module.exports = function (server, spotify) {
 
         socket.on('restartRoom', (roomId, response) => {
             const room = rooms.get(roomId)
-            console.log('RESTART: ', room)
 
             if (room === undefined) {
                 return
@@ -254,7 +272,7 @@ module.exports = function (server, spotify) {
         socket.on('removePlayer', (roomId) => {
             const room = rooms.get(roomId)
 
-            if (!room) {
+            if (room === undefined) {
                 return
             }
 
@@ -271,11 +289,9 @@ module.exports = function (server, spotify) {
         function removeRoom (playerId, roomId) {
             const room = rooms.get(roomId)
 
-            if (!room) {
+            if (room === undefined) {
                 return
             }
-
-            io.to(roomId).emit('roomClear')
 
             if (playerId === room.leaderId) {
                 room.players.forEach((player, id) => {
@@ -284,6 +300,7 @@ module.exports = function (server, spotify) {
                         currentSocket.leave(roomId)
                     }
                 })
+                io.to(roomId).emit('roomClear')
                 rooms.delete(roomId)
             } else {
                 room.players.delete(socket.id)

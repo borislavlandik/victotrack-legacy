@@ -6,6 +6,8 @@ export default {
         } else if (this.$route.params.method === 'authorized') {
             localStorage.setItem('redirect', 'ok')
             window.close()
+        } else {
+            window.close()
         }
     }
 }

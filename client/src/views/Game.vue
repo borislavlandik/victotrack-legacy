@@ -93,6 +93,7 @@ export default {
     },
     mounted () {
         this.$refs.audio.volume = 0.2
+        this.$socket.client.emit('playerReady', this.room)
     },
     computed: {
         currentPlaylist () {
