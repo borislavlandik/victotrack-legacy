@@ -15,7 +15,11 @@ export default new Vuex.Store({
         clientId: null,
         room: null,
         selectedPlaylist: null,
-        playlistImage: 'https://baconmockup.com/250/250',
+        currentPlaylist: {
+            id: 'null',
+            name: 'some name',
+            image: 'https://baconmockup.com/250/250'
+        },
         players: [],
         tracks: [],
         scores: []
@@ -35,6 +39,11 @@ export default new Vuex.Store({
             })
 
             return randomTracks
+        },
+        sortedScores (state) {
+            const sorted = [...state.scores].sort((a, b) => b.score - a.score)
+            console.log(sorted, [...state.scores])
+            return sorted
         }
     },
     mutations: {
@@ -45,7 +54,14 @@ export default new Vuex.Store({
     actions: {
         resetState ({ commit }) {
             commit('set', { key: 'selectedPlaylist', value: null })
-            commit('set', { key: 'playlistImage', value: 'https://baconmockup.com/250/250' })
+            commit('set', {
+                key: 'currentPlaylist',
+                value: {
+                    id: 'null',
+                    name: 'some name',
+                    image: 'https://baconmockup.com/250/250'
+                }
+            })
             commit('set', { key: 'players', value: [] })
             commit('set', { key: 'tracks', value: [] })
             commit('set', { key: 'scores', value: {} })
@@ -59,8 +75,8 @@ export default new Vuex.Store({
         socket_playersUpdate ({ commit }, players) {
             commit('set', { key: 'players', value: players })
         },
-        socket_changePlaylistImage ({ commit }, image) {
-            commit('set', { key: 'playlistImage', value: image })
+        socket_changePlaylist ({ commit }, playlist) {
+            commit('set', { key: 'currentPlaylist', value: playlist })
         },
         socket_tracks ({ commit }, tracks) {
             commit('set', { key: 'tracks', value: tracks })

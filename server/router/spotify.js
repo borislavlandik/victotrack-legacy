@@ -73,7 +73,7 @@ module.exports.app = function (app) {
         const responseState = req.cookies.state
 
         if (error || state !== responseState) {
-            res.redirect(clientUrl)
+            res.redirect(`${clientUrl}/redirect/authorized`)
         } else {
             res.clearCookie('state')
 
@@ -108,7 +108,7 @@ module.exports.app = function (app) {
             }
 
             res.cookie('user_id', userId)
-            res.redirect(`${clientUrl}/redirect`)
+            res.redirect(`${clientUrl}/redirect/authorized`)
         }
     })
 

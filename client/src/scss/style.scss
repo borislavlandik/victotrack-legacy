@@ -4,10 +4,8 @@
 @import "mixins";
 @import "animations";
 @import "card";
-@import "game";
 @import "buttons";
 @import "inputs";
-@import "playlist";
 
 *, *::before, *::after {
     box-sizing: border-box;
@@ -29,4 +27,14 @@ li {
     margin: 0 auto;
     padding: 0 20px;
     max-width: $container-size;
+}
+
+.card.sqr.button.hide-on-desktop {
+    display: none
+}
+
+@include _480 {
+    .card.sqr.button.hide-on-desktop {
+        display: block
+    }
 }

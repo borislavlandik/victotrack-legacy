@@ -20,12 +20,12 @@ input {
     border-radius: 2px;
 }
 
-@media (max-width: 480px) {
-    input {
-        font-size: 15px;
-    }
-    .input-text {
-        padding-left: 5px;
-        padding-right: 5px;
-    }
-}
+// @include _480 {
+//     input {
+//         font-size: 15px;
+//     }
+//     .input-text {
+//         padding-left: 5px;
+//         padding-right: 5px;
+//     }
+// }

@@ -23,7 +23,7 @@ const routes = [
         name: 'selection',
         component: Selection,
         meta: {
-            title: 'Выбор плейлиста'
+            title: 'Выбираем'
         }
     },
     {
@@ -39,7 +39,7 @@ const routes = [
         name: 'waiting',
         component: Waiting,
         meta: {
-            title: 'Комната ожидания'
+            title: 'Ожидание'
         }
     },
     {
@@ -47,11 +47,11 @@ const routes = [
         name: 'fin',
         component: Fin,
         meta: {
-            title: 'Конец игры'
+            title: 'Окончание'
         }
     },
     {
-        path: '/redirect',
+        path: '/redirect/:method',
         name: 'redirect',
         component: Redirect,
         meta: {

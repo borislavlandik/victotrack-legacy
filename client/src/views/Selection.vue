@@ -6,8 +6,8 @@
                 <h3>Комната: {{room}}</h3>
             </div>
             <div class="card game-data__players" v-if="opponents.length > 0">
-                <h3>Соперники:</h3>
                 <ul class="players">
+                    <li>Соперники:</li>
                     <li v-for="(opponent, index) in opponents" :key="index">{{opponent.name}}</li>
                 </ul>
             </div>
@@ -60,11 +60,16 @@ export default {
         }
     },
     created () {
-        if (Cookies.get('user_id')) {
+        const roomAction = localStorage.getItem('roomAction')
+        if (Cookies.get('user_id') && roomAction === 'create') {
             this.$socket.client.emit('createRoom', this.name)
+        } else if (roomAction === 'save') {
+            // сохранение
         } else {
             this.$router.push('/')
         }
+
+        localStorage.removeItem('roomAction')
     },
     async mounted () {
         this.playlists = await Spotify.getPlaylists()
@@ -82,9 +87,12 @@ export default {
         },
         playlistChanged (index) {
             const currentPlaylist = this.playlists[index]
+            if (currentPlaylist === undefined) {
+                console.error('PLAYLIST ERROR: ', currentPlaylist, this.playlists, index)
+            }
             this.$store.commit('set', { key: 'selectedPlaylist', value: currentPlaylist.id })
-            this.$store.commit('set', { key: 'playlistImage', value: currentPlaylist.image })
-            this.$socket.client.emit('changePlaylistImage', this.room, currentPlaylist.image)
+            this.$store.commit('set', { key: 'currentPlaylist', value: currentPlaylist })
+            this.$socket.client.emit('changePlaylist', this.room, currentPlaylist)
         }
     }
 }
@@ -121,24 +129,56 @@ export default {
         margin-right: 50px;
     }
 }
-@media (max-width: 480px) {
-    .game-data {
+
+@include _480 {
+    .game-data{
         display: flex;
         position: relative;
         top: auto;
         align-items: flex-start;
 
-        &__room {
+        &__room.card {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            width: 100%;
             margin-right: 0;
         }
-    }
-    .playlist-nav {
-    display: flex;
-    flex-direction: row;
 
-    .playlist-prev-btn {
-        margin-right: 2px;
+        &__players {
+            position: absolute;
+            top: 330px;
+            width: 100%;
+            ul {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-between;
+
+                li {
+                    width: 50%;
+
+                    &:nth-child(2n) {
+                        text-align: right;
+                    }
+                }
+            }
+        }
     }
-}
+
+    .selection-menu {
+        position: relative;
+        top: 100px;
+
+        .button {
+            width: 45%;
+        }
+    }
+
+    .playlist-nav {
+        .playlist-prev-btn, .playlist-next-btn {
+            display: none;
+        }
+    }
 }
 </style>

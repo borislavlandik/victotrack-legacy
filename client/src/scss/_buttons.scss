@@ -3,13 +3,12 @@ button {
     border: none;
     outline: none;
     background: none;
-
 }
 
 .button {
     display: inline-block;
     position: relative;
-    max-height: 64;
+    max-height: 64px;
 
     text-decoration: none;
     font-family: $font-family;
@@ -17,9 +16,9 @@ button {
     text-align: center;
     color: $text-color;
 
-     &--left-offset {
-         margin-left: 20px;
-     }
+    &--left-offset {
+        margin-left: 20px;
+    }
 
     &.centered {
         left: 50%;
@@ -30,41 +29,28 @@ button {
         width: 100%;
     }
 }
+
 .icons {
-    display:block;
+    display: block;
     width: auto;
     height: auto;
     max-height: 60%;
     margin: auto auto;
-
 }
 
-@media (max-width: 480px) {
+@include _480 {
     .icons {
-        display:block;
+        display: block;
         width: auto;
         height: auto;
         max-height: 60%;
         margin: auto auto;
     }
+
     .button {
         display: inline-block;
         position: relative;
-        max-height: 45;
-        font-size: 15px;
-        &--left-offset {
-            margin-left: 20px;
-        }
-
-       &.centered {
-           left: 50%;
-           transform: translate(-50%);
-       }
-
-       &.stretch {
-           width:100%;
-       }
-
-
+        // max-height: 45;
+        // font-size: 15px;
     }
 }

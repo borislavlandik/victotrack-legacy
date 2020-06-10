@@ -28,6 +28,27 @@
     opacity: 0;
 }
 
+.show {
+    display: inline-block;
+
+    transition: opacity .5s, transform .5s;
+    transform: translate3d(25%, 0, 0);
+    opacity: 0;
+}
+
+.show-next:hover + .show {
+    display: inline-block;
+
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+}
+
+@include _480 {
+    .show, .show-next:hover + .show {
+        display: none;
+    }
+}
+
 @keyframes shakeX {
     from, to {
       transform: translate3d(0, 0, 0);

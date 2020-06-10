@@ -1,7 +1,18 @@
 <template>
 <div class="content-game">
-    <div class="results">
+    <div class="game-zone">
+        <div class="album-timer">
             <img class="curPlaylist" :src="currentPlaylist" alt="Playlist Image">
+             <div class="sqrBar hide-on-desktop">
+                <button @click="goHome" class="card sqr button hide-on-desktop">
+                    <img class="icons" alt="home" src="..\assets\images\icons\home.svg" draggable="false">
+                </button>
+                <button @click="goGame" class="card sqr button hide-on-desktop">
+                    <img class="icons" alt="restart" src="..\assets\images\icons\restart.svg" draggable="false">
+                </button>
+            </div>
+        </div>
+        <div class="results">
             <div class="card" v-if="scores && scores.length > 1 && scores[0].score !== scores[1].score">
                 <h3>Победитель - {{winner.name}}</h3>
             </div>
@@ -13,6 +24,7 @@
                     </tr>
                 </table>
             </div>
+        </div>
     </div>
 
     <div class="info-block">
@@ -29,12 +41,17 @@
 
 <script>
 export default {
+    sockets: {
+        resetRoom () {
+            this.$router.push('waiting')
+        }
+    },
     computed: {
         currentPlaylist () {
-            return this.$store.state.playlistImage
+            return this.$store.state.currentPlaylist.image
         },
         scores () {
-            return this.$store.state.scores
+            return this.$store.getters.sortedScores
         },
         winner () {
             return this.scores[0] || ''
@@ -44,11 +61,17 @@ export default {
         goHome () {
             this.$socket.client.emit('removeRoom', this.$store.state.room)
             this.$router.push('/')
+            this.$store.dispatch('resetState')
         },
         goGame () {
-            // TODO: использовать ту же комнату, что и была
-            // TODO: для разных пользователей разные страницы (выбор или ожидание)
-            this.$router.push('selection')
+            this.$socket.client.emit('restartRoom', this.$store.state.room, response => {
+                if (response === 'leader') {
+                    localStorage.setItem('roomAction', 'save')
+                    this.$router.push('selection')
+                } else if (response === 'player') {
+                    this.$router.push('waiting')
+                }
+            })
         }
     }
 }
